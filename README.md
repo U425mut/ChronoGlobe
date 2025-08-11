@@ -1,2 +1,177 @@
 # ChronoGlobe
-Interactive historical world map with timeline. Open-source and community-driven.
+
+**ChronoGlobe** — tarihsel dünya haritası ve zaman kontrolü aracı. Harita üzerinden yıllara göre (zaman çizgisi) ülke bilgilerini, olayları görselleştiren, interaktif, açık kaynaklı bir web uygulaması.
+
+> Vizyon: Tarihi olayları mekânsal bağlamda keşfetmeyi herkes için kolay, eğlenceli ve açık hale getirmek.
+
+---
+
+## İçindekiler
+
+1. [Özet](#özet)  
+2. [Öne çıkan özellikler](#öne-çıkan-özellikler)  
+3. [Proje mimarisi ve dosya yapısı](#proje-mimarisi-ve-dosya-yapısı)  
+4. [Hızlı başlama (local)](#hızlı-başlama-local)  
+5. [Veri yapıları — JSON şemaları](#veri-yapıları---json-şemaları)  
+6. [2011 Dünya / Tarihsel snapshot oluşturma — adım adım](#2011-dünya--tarihsel-snapshot-oluşturma---adım-adım)  
+7. [Coğrafi verilerle çalışmak — pratik ipuçları](#coğrafi-verilerle-çalışmak---pratik-ipuçları)  
+8. [map.js: önerilen geliştirmeler (yıl bazlı yükleme, tıklamada zoom kapatma)](#mapjs-önerilen-geliştirmeler-yıl-bazlı-yükleme-tıklamada-zoom-kapatma)  
+9. [Katkıda bulunma rehberi (CONTRIBUTING.md özeti)](#katkıda-bulunma-rehberi-contributingmd-özeti)  
+10. [Lisans ve .gitignore önerisi](#lisans-ve-gitignore-önerisi)  
+11. [Gelişmiş: CI / CD, sürümleme, bağış & gelir paylaşımı önerileri](#gelişmiş-ci--cd-sürümleme-bağış--gelir-paylaşımı-önerileri)  
+12. [SSS & sorun giderme](#sss--sorun-giderme)  
+13. [İletişim / kaynaklar](#iletişim--kaynaklar)
+
+---
+
+## Özet
+
+ChronoGlobe; HTML/CSS/JS + [Leaflet](https://leafletjs.com) tabanlı, veri kaynakları `data/` içinde saklanan, yıllara göre farklı dünya haritaları ve ülke bilgileri (history, events, census vb.) gösteren bir uygulamadır. Hedefi: kolayca katkı alınabilecek; veri ekleme, tarihsel snapshot yönetimi ve interaktif keşif olanağı sunmaktır.
+
+---
+
+## Öne çıkan özellikler
+
+- Yıl seçici (slider + ileri/geri butonları) — harita ve bilgi paneli yıl bazlı güncellenir.
+- Ülke arama kutusu (Türkçe isimler destekli).
+- Bilgi paneli: başkent, nüfus, yüzölçümü, tarihçe alt bölümleri, o yıla ait olaylar.
+- Harita: Leaflet ile GeoJSON gösterimi, ülkelerin üzerine gelince tooltip, tıklama ile seçme (isteğe göre zoom kapatılabilir).
+- Açık veri yapısı: `countries.geo.json`, `country-info.json`, `events.json`.
+- Tarihsel snapshot desteği: her yıl için farklı GeoJSON (ör. `data/geo/2011/countries.geo.json`) desteği planlandı.
+
+---
+
+## Proje mimarisi ve dosya yapısı
+
+```
+ChronoGlobe/
+├─ index.html
+├─ README.md
+├─ LICENSE
+├─ .gitignore
+├─ style/
+│  └─ style.css
+├─ js/
+│  ├─ app.js
+│  └─ map.js
+├─ data/
+│  ├─ countries.geo.json
+│  ├─ country-names-tr.json
+│  ├─ country-info.json
+│  ├─ events.json
+│  └─ geo/
+│     ├─ 2011/
+│     │  └─ countries.geo.json
+│     └─ 2025/
+│        └─ countries.geo.json
+├─ tools/
+│  └─ make-2011-world.js
+├─ package.json
+└─ .github/
+   └─ workflows/ci.yml
+```
+
+---
+
+## Hızlı başlama (local)
+
+1. Repo klonla:
+```bash
+git clone https://github.com/<kullanici>/ChronoGlobe.git
+cd ChronoGlobe
+```
+
+2. (Opsiyonel) npm paketleri kur:
+```bash
+npm install
+```
+
+3. Lokal server başlat:
+```bash
+npx http-server -c-1 -p 8080 .
+# veya
+python -m http.server 8080
+```
+
+4. Tarayıcıda aç:
+```
+http://localhost:8080
+```
+
+---
+
+## Veri yapıları — JSON şemaları
+
+### `countries.geo.json`
+GeoJSON FeatureCollection formatında, her feature bir ülke.
+
+### `country-info.json`
+Ülke bilgileri, yıllara göre ayrılmış metadata.
+
+### `events.json`
+Ülkelerin yıllara göre önemli olayları.
+
+---
+
+## 2011 Dünya / Tarihsel snapshot oluşturma — adım adım
+
+- 2011 için `South Sudan`'ı kaldırın.
+- Eğer `Sudan` geometrisi güneyi içermiyorsa `South Sudan` ile birleştirin.
+- Sonucu `data/geo/2011/countries.geo.json` olarak kaydedin.
+
+---
+
+## Coğrafi verilerle çalışmak — pratik ipuçları
+
+- Büyük dosyalar için `mapshaper` ile simplify yapın.
+- TopoJSON kullanarak boyutu küçültün.
+- Yıllara göre ayrı klasörler oluşturun.
+
+---
+
+## map.js: önerilen geliştirmeler
+
+- Yıla göre farklı GeoJSON yükleme.
+- Tıklamada otomatik zoom kapatma.
+
+---
+
+## Katkıda bulunma rehberi
+
+1. Fork → Branch → Commit → PR.
+2. Kod stilini koruyun (ESLint + Prettier).
+3. Veri eklerken dosya yapısına sadık kalın.
+
+---
+
+## Lisans ve .gitignore önerisi
+
+MIT Lisansı kullanın.
+
+Örnek `.gitignore`:
+```
+node_modules/
+dist/
+.vscode/
+.idea/
+.env
+```
+
+---
+
+## Gelişmiş öneriler
+
+- CI/CD için GitHub Actions.
+- Gelir paylaşımı ve bounty sistemi.
+
+---
+
+## SSS & sorun giderme
+
+**Harita açılmıyor:** Konsolu kontrol edin, dosya yollarını doğrulayın.
+
+---
+
+## İletişim
+
+Sorularınız için repo üzerinden issue açabilirsiniz.
