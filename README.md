@@ -2,12 +2,11 @@
 
 **ChronoGlobe** — tarihsel dünya haritası ve zaman kontrolü aracı. Harita üzerinden yıllara göre (zaman çizgisi) ülke bilgilerini, olayları görselleştiren, interaktif, açık kaynaklı bir web uygulaması.
 
-> Vizyon: Tarihi olayları mekânsal bağlamda keşfetmeyi herkes için kolay, eğlenceli ve açık hale getirmek.
+> **Vizyon:** Tarihi olayları mekânsal bağlamda keşfetmeyi herkes için kolay, eğlenceli ve açık hale getirmek.
 
 ---
 
 ## İçindekiler
-
 1. [Özet](#özet)  
 2. [Öne çıkan özellikler](#öne-çıkan-özellikler)  
 3. [Proje mimarisi ve dosya yapısı](#proje-mimarisi-ve-dosya-yapısı)  
@@ -15,160 +14,176 @@
 5. [Veri yapıları — JSON şemaları](#veri-yapıları---json-şemaları)  
 6. [2011 Dünya / Tarihsel snapshot oluşturma — adım adım](#2011-dünya--tarihsel-snapshot-oluşturma---adım-adım)  
 7. [Coğrafi verilerle çalışmak — pratik ipuçları](#coğrafi-verilerle-çalışmak---pratik-ipuçları)  
-8. [map.js: önerilen geliştirmeler (yıl bazlı yükleme, tıklamada zoom kapatma)](#mapjs-önerilen-geliştirmeler-yıl-bazlı-yükleme-tıklamada-zoom-kapatma)  
-9. [Katkıda bulunma rehberi (CONTRIBUTING.md özeti)](#katkıda-bulunma-rehberi-contributingmd-özeti)  
+8. [map.js: önerilen geliştirmeler](#mapjs-önerilen-geliştirmeler)  
+9. [Katkıda bulunma rehberi](#katkıda-bulunma-rehberi)  
 10. [Lisans ve .gitignore önerisi](#lisans-ve-gitignore-önerisi)  
-11. [Gelişmiş: CI / CD, sürümleme, bağış & gelir paylaşımı önerileri](#gelişmiş-ci--cd-sürümleme-bağış--gelir-paylaşımı-önerileri)  
+11. [Gelişmiş öneriler](#gelişmiş-öneriler)  
 12. [SSS & sorun giderme](#sss--sorun-giderme)  
-13. [İletişim / kaynaklar](#iletişim--kaynaklar)
+13. [İletişim](#iletişim)  
 
 ---
 
 ## Özet
-
-ChronoGlobe; HTML/CSS/JS + [Leaflet](https://leafletjs.com) tabanlı, veri kaynakları `data/` içinde saklanan, yıllara göre farklı dünya haritaları ve ülke bilgileri (history, events, census vb.) gösteren bir uygulamadır. Hedefi: kolayca katkı alınabilecek; veri ekleme, tarihsel snapshot yönetimi ve interaktif keşif olanağı sunmaktır.
+ChronoGlobe; HTML/CSS/JS + [Leaflet](https://leafletjs.com) tabanlı, veri kaynakları `data/` klasöründe saklanan, yıllara göre farklı dünya haritaları ve ülke bilgilerini gösteren (history, events, census vb.) bir uygulamadır.  
+Hedef: kolayca katkı alınabilecek, veri ekleme ve tarihsel snapshot yönetimiyle interaktif keşif olanağı sunmak.
 
 ---
 
 ## Öne çıkan özellikler
-
-- Yıl seçici (slider + ileri/geri butonları) — harita ve bilgi paneli yıl bazlı güncellenir.
-- Ülke arama kutusu (Türkçe isimler destekli).
-- Bilgi paneli: başkent, nüfus, yüzölçümü, tarihçe alt bölümleri, o yıla ait olaylar.
-- Harita: Leaflet ile GeoJSON gösterimi, ülkelerin üzerine gelince tooltip, tıklama ile seçme (isteğe göre zoom kapatılabilir).
-- Açık veri yapısı: `countries.geo.json`, `country-info.json`, `events.json`.
-- Tarihsel snapshot desteği: her yıl için farklı GeoJSON (ör. `data/geo/2011/countries.geo.json`) desteği planlandı.
+- **Yıl seçici** (slider + ileri/geri butonları) — harita ve bilgi paneli yıl bazlı güncellenir.
+- **Ülke arama kutusu** — Türkçe isim desteği.
+- **Bilgi paneli** — başkent, nüfus, yüzölçümü, tarihçe, o yıla ait olaylar.
+- **Harita** — Leaflet ile GeoJSON gösterimi, hover ile tooltip, tıklama ile seçim (isteğe bağlı zoom kapatma).
+- **Açık veri yapısı** — `countries.geo.json`, `country-info.json`, `events.json`.
+- **Tarihsel snapshot desteği** — her yıl için farklı GeoJSON dosyaları (örn. `2011` yılı haritası).
 
 ---
 
 ## Proje mimarisi ve dosya yapısı
-
-```
 CHRONOGLOBE/
 └── ChronoMap/
-    ├── data/
-    │   ├── countries.geo.json
-    │   ├── country-info.json
-    │   ├── country-names-tr.json
-    │   └── events.json
-    │
-    ├── js/
-    │   ├── app.js
-    │   ├── documentation.html
-    │   ├── license.txt
-    │   ├── map.js
-    │   └── test.html
-    │
-    ├── style/
-    │   └── style.css
-    │
-    ├── index.html
-    ├── LICENSE
-    └── README.md
+├── data/
+│ ├── countries.geo.json # Ülkelerin coğrafi sınır verileri
+│ ├── country-info.json # Ülkelerin yıllara göre detaylı bilgileri
+│ ├── country-names-tr.json # Ülkelerin Türkçe adları
+│ └── events.json # Ülkelerin yıllara göre önemli olayları
+│
+├── js/
+│ ├── app.js # Ana uygulama mantığı
+│ ├── documentation.html # Proje dokümantasyonu (HTML formatında)
+│ ├── license.txt # Lisans metni
+│ ├── map.js # Harita işleme ve Leaflet entegrasyonu
+│ └── test.html # Test sayfası
+│
+├── style/
+│ └── style.css # Stil dosyaları
+│
+├── index.html # Ana sayfa
+├── LICENSE # Lisans dosyası
+└── README.md # Proje tanıtım ve kullanım kılavuzu
 
-```
+yaml
+Kopyala
+Düzenle
 
 ---
 
 ## Hızlı başlama (local)
-
-1. Repo klonla:
+1. Depoyu klonlayın:
 ```bash
 git clone https://github.com/<kullanici>/ChronoGlobe.git
-cd ChronoGlobe
-```
+cd ChronoGlobe/ChronoMap
+(Opsiyonel) Bağımlılıkları yükleyin:
 
-2. (Opsiyonel) npm paketleri kur:
-```bash
+bash
+Kopyala
+Düzenle
 npm install
-```
+Lokal sunucu başlatın:
 
-3. Lokal server başlat:
-```bash
+bash
+Kopyala
+Düzenle
 npx http-server -c-1 -p 8080 .
 # veya
 python -m http.server 8080
-```
+Tarayıcıda açın:
 
-4. Tarayıcıda aç:
-```
+arduino
+Kopyala
+Düzenle
 http://localhost:8080
-```
+Veri yapıları — JSON şemaları
+countries.geo.json
+GeoJSON FeatureCollection formatında
 
----
+Her feature bir ülkeyi temsil eder.
 
-## Veri yapıları — JSON şemaları
+properties alanı ISO kod, İngilizce ve Türkçe isim içerir.
 
-### `countries.geo.json`
-GeoJSON FeatureCollection formatında, her feature bir ülke.
+country-info.json
+Ülke bilgileri yıllara göre ayrılmıştır.
 
-### `country-info.json`
-Ülke bilgileri, yıllara göre ayrılmış metadata.
+Örnek:
 
-### `events.json`
-Ülkelerin yıllara göre önemli olayları.
+json
+Kopyala
+Düzenle
+{
+  "SDN": {
+    "name": "Sudan",
+    "capital": "Khartoum",
+    "data": {
+      "2010": { "population": 35000000, "area": 1886068 },
+      "2011": { "population": 35300000, "area": 1886068 }
+    }
+  }
+}
+events.json
+Ülkelerin yıllara göre önemli olaylarını içerir.
 
----
+json
+Kopyala
+Düzenle
+{
+  "SDN": {
+    "2011": [
+      { "title": "Olay adı", "description": "Açıklama", "date": "2011-07-09" }
+    ]
+  }
+}
+2011 Dünya / Tarihsel snapshot oluşturma — adım adım
+South Sudan verisini kaldırın.
 
-## 2011 Dünya / Tarihsel snapshot oluşturma — adım adım
+Eğer Sudan geometrisi eksikse South Sudan sınırları ile birleştirin.
 
-- 2011 için `South Sudan`'ı kaldırın.
-- Eğer `Sudan` geometrisi güneyi içermiyorsa `South Sudan` ile birleştirin.
-- Sonucu `data/geo/2011/countries.geo.json` olarak kaydedin.
+Dosyayı data/geo/2011/countries.geo.json olarak kaydedin.
 
----
+Coğrafi verilerle çalışmak — pratik ipuçları
+Büyük dosyaları mapshaper ile küçültün (simplify).
 
-## Coğrafi verilerle çalışmak — pratik ipuçları
+Mümkünse TopoJSON formatına dönüştürün.
 
-- Büyük dosyalar için `mapshaper` ile simplify yapın.
-- TopoJSON kullanarak boyutu küçültün.
-- Yıllara göre ayrı klasörler oluşturun.
+Yıllara göre ayrı klasörlerde saklayın (data/geo/).
 
----
+map.js: önerilen geliştirmeler
+Yıl seçildiğinde dinamik olarak ilgili GeoJSON’u yükleme.
 
-## map.js: önerilen geliştirmeler
+Tıklamada zoom özelliğini opsiyonel hale getirme.
 
-- Yıla göre farklı GeoJSON yükleme.
-- Tıklamada otomatik zoom kapatma.
+Katkıda bulunma rehberi
+Fork → Branch → Commit → Pull Request.
 
----
+Kod stilini koruyun (ESLint + Prettier).
 
-## Katkıda bulunma rehberi
+Veri eklerken mevcut dosya yapısına uygun ekleme yapın.
 
-1. Fork → Branch → Commit → PR.
-2. Kod stilini koruyun (ESLint + Prettier).
-3. Veri eklerken dosya yapısına sadık kalın.
+Lisans ve .gitignore önerisi
+MIT Lisansı önerilir.
 
----
+Örnek .gitignore:
 
-## Lisans ve .gitignore önerisi
-
-MIT Lisansı kullanın.
-
-Örnek `.gitignore`:
-```
+bash
+Kopyala
+Düzenle
 node_modules/
 dist/
 .vscode/
 .idea/
 .env
-```
+Gelişmiş öneriler
+CI/CD için GitHub Actions kullanın.
 
----
+Gelir paylaşımı veya ödül sistemi eklenebilir.
 
-## Gelişmiş öneriler
+SSS & sorun giderme
+Harita açılmıyor:
 
-- CI/CD için GitHub Actions.
-- Gelir paylaşımı ve bounty sistemi.
+Konsolu kontrol edin (F12 → Console / Network).
 
----
+Dosya yollarının doğru olduğundan emin olun.
 
-## SSS & sorun giderme
+file:// yerine lokal sunucu ile çalıştırın.
 
-**Harita açılmıyor:** Konsolu kontrol edin, dosya yollarını doğrulayın.
-
----
-
-## İletişim
-
-Sorularınız için repo üzerinden issue açabilirsiniz.
+İletişim
+Sorularınız için GitHub üzerinden issue açabilirsiniz.
