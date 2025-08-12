@@ -62,10 +62,6 @@ CHRONOGLOBE/
 ├── LICENSE # Lisans dosyası
 └── README.md # Proje tanıtım ve kullanım kılavuzu
 
-yaml
-Kopyala
-Düzenle
-
 ---
 
 ## Hızlı başlama (local)
