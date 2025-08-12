@@ -1,289 +1,177 @@
-ChronoGlobe
-ChronoGlobe — tarihsel dünya haritası ve zaman kontrolü aracı. Harita üzerinden yıllara göre (zaman çizgisi) ülke bilgilerini, olayları görselleştiren, interaktif, açık kaynaklı bir web uygulaması.
+# ChronoGlobe
 
-Vizyon: Tarihi olayları mekânsal bağlamda keşfetmeyi herkes için kolay, eğlenceli ve açık hale getirmek.
+**ChronoGlobe** — tarihsel dünya haritası ve zaman kontrolü aracı. Harita üzerinden yıllara göre (zaman çizgisi) ülke bilgilerini, olayları görselleştiren, interaktif, açık kaynaklı bir web uygulaması.
 
-İçindekiler
-Özet
+> Vizyon: Tarihi olayları mekânsal bağlamda keşfetmeyi herkes için kolay, eğlenceli ve açık hale getirmek.
 
-Öne çıkan özellikler
+---
 
-Düzeltilmiş proje dosya yapısı
+## İçindekiler
 
-Hızlı başlama (local)
+1. [Özet](#özet)  
+2. [Öne çıkan özellikler](#öne-çıkan-özellikler)  
+3. [Proje mimarisi ve dosya yapısı](#proje-mimarisi-ve-dosya-yapısı)  
+4. [Hızlı başlama (local)](#hızlı-başlama-local)  
+5. [Veri yapıları — JSON şemaları](#veri-yapıları---json-şemaları)  
+6. [2011 Dünya / Tarihsel snapshot oluşturma — adım adım](#2011-dünya--tarihsel-snapshot-oluşturma---adım-adım)  
+7. [Coğrafi verilerle çalışmak — pratik ipuçları](#coğrafi-verilerle-çalışmak---pratik-ipuçları)  
+8. [map.js: önerilen geliştirmeler (yıl bazlı yükleme, tıklamada zoom kapatma)](#mapjs-önerilen-geliştirmeler-yıl-bazlı-yükleme-tıklamada-zoom-kapatma)  
+9. [Katkıda bulunma rehberi (CONTRIBUTING.md özeti)](#katkıda-bulunma-rehberi-contributingmd-özeti)  
+10. [Lisans ve .gitignore önerisi](#lisans-ve-gitignore-önerisi)  
+11. [Gelişmiş: CI / CD, sürümleme, bağış & gelir paylaşımı önerileri](#gelişmiş-ci--cd-sürümleme-bağış--gelir-paylaşımı-önerileri)  
+12. [SSS & sorun giderme](#sss--sorun-giderme)  
+13. [İletişim / kaynaklar](#iletişim--kaynaklar)
 
-Veri yapıları — JSON şemaları (örnekler)
+---
 
-2011 Dünya / Tarihsel snapshot oluşturma — adımlar (özet & uygulanabilir)
+## Özet
 
-Coğrafi verilerle çalışmak — pratik ipuçları
+ChronoGlobe; HTML/CSS/JS + [Leaflet](https://leafletjs.com) tabanlı, veri kaynakları `data/` içinde saklanan, yıllara göre farklı dünya haritaları ve ülke bilgileri (history, events, census vb.) gösteren bir uygulamadır. Hedefi: kolayca katkı alınabilecek; veri ekleme, tarihsel snapshot yönetimi ve interaktif keşif olanağı sunmaktır.
 
-map.js için önerilen değişiklikler
+---
 
-Katkıda bulunma rehberi (özet)
+## Öne çıkan özellikler
 
-Lisans, .gitignore ve repo yönetimi önerileri
+- Yıl seçici (slider + ileri/geri butonları) — harita ve bilgi paneli yıl bazlı güncellenir.
+- Ülke arama kutusu (Türkçe isimler destekli).
+- Bilgi paneli: başkent, nüfus, yüzölçümü, tarihçe alt bölümleri, o yıla ait olaylar.
+- Harita: Leaflet ile GeoJSON gösterimi, ülkelerin üzerine gelince tooltip, tıklama ile seçme (isteğe göre zoom kapatılabilir).
+- Açık veri yapısı: `countries.geo.json`, `country-info.json`, `events.json`.
+- Tarihsel snapshot desteği: her yıl için farklı GeoJSON (ör. `data/geo/2011/countries.geo.json`) desteği planlandı.
 
-Sık Sorulan Sorular (SSS) & sorun giderme
+---
 
-İletişim / kaynaklar
+## Proje mimarisi ve dosya yapısı
 
-1 — Özet
-ChronoGlobe; HTML/CSS/JS + Leaflet kullanır. Tüm veri kaynakları data/ içinde JSON/GeoJSON olarak saklanır. Amaç; yıllara göre (snapshot) farklı coğrafi durumları/paylaşılan veriyi kolay yönetilebilir hâle getirmek ve geliştirici/topluluk katkısını teşvik etmektir.
-
-2 — Öne çıkan özellikler
-Yıl seçici (slider + ileri/geri) — UI ve harita yıl bazlı güncellenir.
-
-Ülke arama kutusu (Türkçe isim desteği).
-
-Bilgi paneli: başkent, nüfus, yüzölçümü, tarihçe alt bölümleri ve o yıla ait olaylar.
-
-Harita: Leaflet + GeoJSON, hover tooltip, tıklama seçimi (isteğe göre zoom kapatılabilir).
-
-Açık veri yapısı: countries.geo.json, country-info.json, events.json.
-
-Tarihsel snapshot desteği: data/geo/<year>/countries.geo.json şeklinde dizinleme.
-
-3 — Düzeltilmiş proje dosya yapısı
-Bu README, tutarlı ve kolay yönetilebilir bir dosya yapısına göre düzenlenmiştir:
-
-yaml
-Kopyala
-Düzenle
+```
 ChronoGlobe/
 ├─ index.html
 ├─ README.md
 ├─ LICENSE
 ├─ .gitignore
-├─ package.json                # opsiyonel: build / dev script'leri için
+├─ style/
+│  └─ style.css
+├─ js/
+│  ├─ app.js
+│  └─ map.js
 ├─ data/
-│  ├─ countries.geo.json       # güncel (varsayılan) dünya GeoJSON
+│  ├─ countries.geo.json
 │  ├─ country-names-tr.json
 │  ├─ country-info.json
 │  ├─ events.json
 │  └─ geo/
 │     ├─ 2011/
-│     │  └─ countries.geo.json  # 2011 snapshot
+│     │  └─ countries.geo.json
 │     └─ 2025/
-│        └─ countries.geo.json  # 2025 snapshot (varsayılan örnek)
-├─ js/
-│  ├─ app.js
-│  ├─ map.js
-│  └─ utils/
-│     └─ make-2011-world.js     # yardımcı araç (opsiyonel)
-├─ style/
-│  └─ style.css
+│        └─ countries.geo.json
+├─ tools/
+│  └─ make-2011-world.js
+├─ package.json
 └─ .github/
-   └─ workflows/
-      └─ ci.yml                 # opsiyonel CI konfigürasyonu
-Not: Önceki karışık ChronoMap/ alt klasörü ya da benzeri iki katmanlı yapı yerine tek kök ChronoGlobe/ tavsiye ediyorum — hem GitHub Pages hem de local server kullanımında daha basit olur. Eğer repo hâli hazırda başka bir kök kullanıyorsa README'yi ona göre kolayca uyarlayabilirsin.
+   └─ workflows/ci.yml
+```
 
-4 — Hızlı başlama (local)
-bash
-Kopyala
-Düzenle
+---
+
+## Hızlı başlama (local)
+
+1. Repo klonla:
+```bash
 git clone https://github.com/<kullanici>/ChronoGlobe.git
 cd ChronoGlobe
+```
 
-# opsiyonel node bağımlılıkları
+2. (Opsiyonel) npm paketleri kur:
+```bash
 npm install
+```
 
-# basit bir static server
+3. Lokal server başlat:
+```bash
 npx http-server -c-1 -p 8080 .
 # veya
 python -m http.server 8080
+```
 
-# tarayıcıda aç:
+4. Tarayıcıda aç:
+```
 http://localhost:8080
-5 — Veri yapıları — JSON şemaları (örnekler)
-5.1 countries.geo.json (GeoJSON — FeatureCollection)
-Her feature bir ülkeyi temsil eder. Örnek küçük bir entry:
+```
 
-json
-Kopyala
-Düzenle
-{
-  "type": "Feature",
-  "id": "SDN",
-  "properties": {
-    "name": "Sudan",
-    "name_tr": "Sudan",
-    "iso_a3": "SDN"
-  },
-  "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-      [
-        [29.0, 10.0],
-        [30.0, 10.0],
-        ...
-      ]
-    ]
-  }
-}
-Önemli notlar:
+---
 
-id olarak ISO-3166-3 veya ISO-3166-2 formatı (tutarlı tuttuğun bir format) kullanılmalı.
+## Veri yapıları — JSON şemaları
 
-properties.name (İngilizce) uygulamada ana anahtar olarak kullanılır. name_tr opsiyonel ama arama/i18n için faydalı.
+### `countries.geo.json`
+GeoJSON FeatureCollection formatında, her feature bir ülke.
 
-5.2 country-info.json
-Yıl bazlı metadata örneği:
+### `country-info.json`
+Ülke bilgileri, yıllara göre ayrılmış metadata.
 
-json
-Kopyala
-Düzenle
-{
-  "SDN": {
-    "name": "Sudan",
-    "capital": "Khartoum",
-    "years": {
-      "2010": {
-        "population": 35000000,
-        "area": 1886068,
-        "content": {
-          "Kuruluş": "Bilgi...",
-          "Siyasi": "Bilgi..."
-        }
-      },
-      "2011": {
-        "population": 35300000,
-        "area": 1886068
-      }
-    }
-  }
-}
-years objesi anahtarları string yıl (örn. "2011") olmalı.
+### `events.json`
+Ülkelerin yıllara göre önemli olayları.
 
-5.3 events.json
-json
-Kopyala
-Düzenle
-{
-  "SDN": {
-    "2011": [
-      {
-        "title": "Güney Sudan'ın bağımsızlığı",
-        "date": "2011-07-09",
-        "description": "Güney Sudan bağımsız bir devlet olarak ilan edildi."
-      }
-    ]
-  }
-}
-6 — 2011 Dünya / Tarihsel snapshot oluşturma — adım adım (özet)
-Aşağıdaki adımlar, 2011 yılı için geçerli dünya haritasını (ör. South Sudan henüz ayrılmamış hâliyle Sudan) oluşturmanı sağlar.
+---
 
-Özet adımlar (uygulanabilir, pratik):
+## 2011 Dünya / Tarihsel snapshot oluşturma — adım adım
 
-Mevcut en güncel GeoJSON’u yedekle (data/countries.geo.json).
+- 2011 için `South Sudan`'ı kaldırın.
+- Eğer `Sudan` geometrisi güneyi içermiyorsa `South Sudan` ile birleştirin.
+- Sonucu `data/geo/2011/countries.geo.json` olarak kaydedin.
 
-Kaynak GeoJSON'u hazırla: elimizde güncel (2025 gibi) GeoJSON varsa, 2011 durumunu elde etmek için:
+---
 
-South Sudan (feature SSD) varsa, onu kaldır ya da Sudan (SDN) ile birleştir (merge).
+## Coğrafi verilerle çalışmak — pratik ipuçları
 
-Eğer SDN geometrisi Güney Sudan'ı kapsayacak şekilde genişletilmişse, 2011 için bu hali kullan; aksi halde SDN ve SSD geometrilerini birleştirip yeni SDN geometrisini oluştur.
+- Büyük dosyalar için `mapshaper` ile simplify yapın.
+- TopoJSON kullanarak boyutu küçültün.
+- Yıllara göre ayrı klasörler oluşturun.
 
-GeoJSON editör / araç kullan:
+---
 
-mapshaper ile prune / merge / simplify işlemleri yap:
+## map.js: önerilen geliştirmeler
 
-bash
-Kopyala
-Düzenle
-# örnek: SSD sil, SDN'yi birleştir
-mapshaper data/countries.geo.json -filter 'properties.name!="South Sudan"' -o data/geo/2011/countries.geo.json
-(Daha net merge gerekiyorsa .json açıp SDN geometrisini SSD geometrisiyle birleştir.)
+- Yıla göre farklı GeoJSON yükleme.
+- Tıklamada otomatik zoom kapatma.
 
-Topolojik tutarlılığı kontrol et: Çokgenlerin yönleri, çakışma(duplicate) veya küçük delikler olup olmadığına bak. mapshaper -clean kullanılabilir.
+---
 
-bash
-Kopyala
-Düzenle
-mapshaper data/geo/2011/countries.geo.json -clean -o data/geo/2011/countries.geo.json
-Dosya küçültme (opsiyonel ama önerilir): -simplify ile noktaları azalt; TopoJSON'ye çevir ve sıkıştır. Örnek:
+## Katkıda bulunma rehberi
 
-bash
-Kopyala
-Düzenle
-mapshaper data/geo/2011/countries.geo.json -simplify 5% -o data/geo/2011/countries.simplified.geo.json
-Uygulama entegrasyonu: map.js veya app.js içinde yıl seçimine göre data/geo/2011/countries.geo.json yükleyecek kodu ekle.
+1. Fork → Branch → Commit → PR.
+2. Kod stilini koruyun (ESLint + Prettier).
+3. Veri eklerken dosya yapısına sadık kalın.
 
-Test: Local server üzerinde 2011 yılı seçildiğinde beklenen haritanın (Sudan’ın güneyi dahil değil) görüntülendiğini doğrula.
+---
 
-Not: South Sudan 9 Temmuz 2011'de resmen bağımsız oldu. 2011 yılının "başı" için (ör. 2011-01-01) Güney Sudan hâlâ Sudan parçası kabul edilir; 2011 sonrası (özellikle 2011-07-09) için ayrı bir feature (SSD) kullanmak mantıklı.
+## Lisans ve .gitignore önerisi
 
-7 — Coğrafi verilerle çalışmak — pratik ipuçları
-Büyük GeoJSON dosyalarını mapshaper ile basitleştir:
-mapshaper input.geojson -simplify 10% -o output.geojson
+MIT Lisansı kullanın.
 
-TopoJSON kullanmak transfer boyutunu ciddi azaltır (özellikle web).
-
-Her feature properties içinde en az: id, name, iso_a3 olsun. Bu alanlara uygulama kodu bağlı olacak.
-
-Coğrafi sınırlar (öz. ayrılma tarihleri) için güvenilir kaynak kullan. (Natural Earth, GADM vb.)
-
-Versiyon kontrolü: büyük GeoJSON'ları metin farkı (diff) açısından daha okunabilir hale getirmek için mapshaper -o format=geojson veya prettier ile biçimlendir.
-
-8 — map.js için önerilen değişiklikler
-Yıl bazlı GeoJSON yükleme: Slider değiştiğinde fetch("data/geo/<year>/countries.geo.json") ile lazy-load yap. Cache: aynı yıl tekrar istenirse tekrar fetch yapma.
-
-Tıklamada otomatik zoom kapatma: map.fitBounds() çağrısını kaldır veya bir ayar (config.clickZoom = false) ile kontrol et.
-
-Seçili ülke vurgulama: Seçili layer'a özel style ver, hover/mouseout reset mantığını selectedLayer ile koru.
-
-Performans: Büyük dosyalar için ekran dışındaki bölgeler için GeoJSON parçalarına ayırma (tile/region-based loading).
-
-9 — Katkıda bulunma rehberi (kısa)
-Repo'yu fork et.
-
-Yeni bir branch aç (feature/your-change).
-
-Değişiklik yap, küçük ve anlamlı commit mesajları kullan.
-
-Test et — lokal server çalışıyor mu kontrol et.
-
-Pull request açarken ne yaptığını ve nedenini açıkça yaz.
-
-Veri ekliyorsan; country-info ve events için örnek ve kaynak belirt.
-
-Bağış / ödül sistemi düşünüyorsanız (bounty): katkı kurallarını CONTRIBUTING.md içinde açıkça yazın. Örnek: "Yılı/özelliği ekleyen, doğrulayan ve PR onayını alan kişi ödülün %x'ini alır" gibi.
-
-10 — Lisans ve .gitignore önerisi
-Lisans: MIT önerilir. LICENSE dosyasına MIT metnini ekle.
-
-Örnek .gitignore:
-
-bash
-Kopyala
-Düzenle
+Örnek `.gitignore`:
+```
 node_modules/
 dist/
 .vscode/
 .idea/
 .env
-.DS_Store
-data/geo/**/countries.geo.json.gz   # opsiyonel: sıkıştırılmış büyük dosyalar
-11 — SSS & sorun giderme
-Harita açılmıyor / boş görünüyor:
+```
 
-Konsolu (DevTools) kontrol et (404 hataları, CORS, JSON parse hatası).
+---
 
-data/ yolunu kontrol et. Local olarak file:// ile değil bir HTTP server ile çalıştır.
+## Gelişmiş öneriler
 
-GeoJSON çok ağır / sayfa yavaş:
+- CI/CD için GitHub Actions.
+- Gelir paylaşımı ve bounty sistemi.
 
-mapshaper -simplify ile azalt. TopoJSON'ye dönüştür.
+---
 
-Sudan / Güney Sudan sınır problemi:
+## SSS & sorun giderme
 
-2011 snapshot'ında SSD'yi kaldır veya SDN geometri ile birleştir. Çift özellik (duplicate) veya overlapped polygon olmasın.
+**Harita açılmıyor:** Konsolu kontrol edin, dosya yollarını doğrulayın.
 
-12 — İletişim / kaynaklar
-Leaflet: https://leafletjs.com
+---
 
-mapshaper: https://mapshaper.org
+## İletişim
 
-Natural Earth (coğrafi referans): https://www.naturalearthdata.com
-
-Son söz
-Bu README, projenin yapısını düzene koymak, tarihsel snapshot yönetimini netleştirmek ve katkı süreçlerini kolaylaştırmak için hazırlandı. İstersen ben bunu doğrudan proje köküne README.md olarak yazabilirim (yerel olarak oluşturup link veririm) veya .github/ISSUE_TEMPLATE.md, CONTRIBUTING.md gibi destekleyici dosyaları da hazırlayayım.
+Sorularınız için repo üzerinden issue açabilirsiniz.
