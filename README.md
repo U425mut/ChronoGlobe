@@ -2,7 +2,7 @@
 
 **ChronoGlobe** — tarihsel dünya haritası ve zaman kontrolü aracı. Harita üzerinden yıllara göre (zaman çizgisi) ülke bilgilerini, olayları görselleştiren, interaktif, açık kaynaklı bir web uygulaması.
 
-> Vizyon: Tarihi olayları mekânsal bağlamda keşfetmeyi herkes için kolay, eğlenceli ve açık hale getirmek.
+> **Vizyon:** Tarihi olayları mekânsal bağlamda keşfetmeyi herkes için kolay, eğlenceli ve açık hale getirmek.
 
 ---
 
@@ -15,18 +15,19 @@
 5. [Veri yapıları — JSON şemaları](#veri-yapıları---json-şemaları)  
 6. [2011 Dünya / Tarihsel snapshot oluşturma — adım adım](#2011-dünya--tarihsel-snapshot-oluşturma---adım-adım)  
 7. [Coğrafi verilerle çalışmak — pratik ipuçları](#coğrafi-verilerle-çalışmak---pratik-ipuçları)  
-8. [map.js: önerilen geliştirmeler (yıl bazlı yükleme, tıklamada zoom kapatma)](#mapjs-önerilen-geliştirmeler-yıl-bazlı-yükleme-tıklamada-zoom-kapatma)  
-9. [Katkıda bulunma rehberi (CONTRIBUTING.md özeti)](#katkıda-bulunma-rehberi-contributingmd-özeti)  
+8. [map.js: önerilen geliştirmeler](#mapjs-önerilen-geliştirmeler)  
+9. [Katkıda bulunma rehberi](#katkıda-bulunma-rehberi)  
 10. [Lisans ve .gitignore önerisi](#lisans-ve-gitignore-önerisi)  
-11. [Gelişmiş: CI / CD, sürümleme, bağış & gelir paylaşımı önerileri](#gelişmiş-ci--cd-sürümleme-bağış--gelir-paylaşımı-önerileri)  
+11. [Gelişmiş öneriler](#gelişmiş-öneriler)  
 12. [SSS & sorun giderme](#sss--sorun-giderme)  
-13. [İletişim / kaynaklar](#iletişim--kaynaklar)
+13. [İletişim](#iletişim)  
 
 ---
 
 ## Özet
 
-ChronoGlobe; HTML/CSS/JS + [Leaflet](https://leafletjs.com) tabanlı, veri kaynakları `data/` içinde saklanan, yıllara göre farklı dünya haritaları ve ülke bilgileri (history, events, census vb.) gösteren bir uygulamadır. Hedefi: kolayca katkı alınabilecek; veri ekleme, tarihsel snapshot yönetimi ve interaktif keşif olanağı sunmaktır.
+ChronoGlobe; HTML/CSS/JS + [Leaflet](https://leafletjs.com) tabanlı, veri kaynakları `data/` içinde saklanan, yıllara göre farklı dünya haritaları ve ülke bilgileri (history, events, census vb.) gösteren bir uygulamadır.  
+Hedefi: kolayca katkı alınabilecek; veri ekleme, tarihsel snapshot yönetimi ve interaktif keşif olanağı sunmaktır.
 
 ---
 
@@ -37,7 +38,7 @@ ChronoGlobe; HTML/CSS/JS + [Leaflet](https://leafletjs.com) tabanlı, veri kayna
 - Bilgi paneli: başkent, nüfus, yüzölçümü, tarihçe alt bölümleri, o yıla ait olaylar.
 - Harita: Leaflet ile GeoJSON gösterimi, ülkelerin üzerine gelince tooltip, tıklama ile seçme (isteğe göre zoom kapatılabilir).
 - Açık veri yapısı: `countries.geo.json`, `country-info.json`, `events.json`.
-- Tarihsel snapshot desteği: her yıl için farklı GeoJSON (ör. `data/geo/2011/countries.geo.json`) desteği planlandı.
+- Tarihsel snapshot desteği: her yıl için farklı GeoJSON (ör. `data/geo/2011/countries.geo.json`).
 
 ---
 
@@ -65,7 +66,6 @@ CHRONOGLOBE/
     ├── index.html
     ├── LICENSE
     └── README.md
-
 ```
 
 ---
@@ -75,7 +75,7 @@ CHRONOGLOBE/
 1. Repo klonla:
 ```bash
 git clone https://github.com/<kullanici>/ChronoGlobe.git
-cd ChronoGlobe
+cd ChronoGlobe/ChronoMap
 ```
 
 2. (Opsiyonel) npm paketleri kur:
