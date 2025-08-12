@@ -8,19 +8,19 @@
 
 ## İçindekiler
 
-1. [Özet](#özet)  
-2. [Öne çıkan özellikler](#öne-çıkan-özellikler)  
-3. [Proje mimarisi ve dosya yapısı](#proje-mimarisi-ve-dosya-yapısı)  
-4. [Hızlı başlama (local)](#hızlı-başlama-local)  
-5. [Veri yapıları — JSON şemaları](#veri-yapıları--json-şemaları)  
-6. [2011 Dünya / Tarihsel snapshot oluşturma — adım adım](#2011-dünya--tarihsel-snapshot-oluşturma--adım-adım)  
-7. [Coğrafi verilerle çalışmak — pratik ipuçları](#coğrafi-verilerle-çalışmak--pratik-ipuçları)  
-8. [map.js: önerilen geliştirmeler](#mapjs-önerilen-gelistirmeler)  
-9. [Katkıda bulunma rehberi](#katkıda-bulunma-rehberi)  
-10. [Lisans ve .gitignore önerisi](#lisans-ve-gitignore-onerisi)  
-11. [Gelişmiş öneriler](#gelismis-oneriler)  
-12. [SSS & sorun giderme](#sss--sorun-giderme)  
-13. [İletişim](#iletisim)  
+- [Özet](#özet)  
+- [Öne çıkan özellikler](#öne-çıkan-özellikler)  
+- [Proje mimarisi ve dosya yapısı](#proje-mimarisi-ve-dosya-yapısı)  
+- [Hızlı başlama (local)](#hızlı-başlama-local)  
+- [Veri yapıları — JSON şemaları](#veri-yapıları--json-şemaları)  
+- [2011 Dünya / Tarihsel snapshot oluşturma — adım adım](#2011-dünya--tarihsel-snapshot-oluşturma--adım-adım)  
+- [Coğrafi verilerle çalışmak — pratik ipuçları](#coğrafi-verilerle-çalışmak--pratik-ipuçları)  
+- [map.js: önerilen geliştirmeler](#mapjs-önerilen-geliştirmeler)  
+- [Katkıda bulunma rehberi](#katkıda-bulunma-rehberi)  
+- [Lisans ve .gitignore önerisi](#lisans-ve-gitignore-önerisi)  
+- [Gelişmiş öneriler](#gelişmiş-öneriler)  
+- [SSS & sorun giderme](#sss--sorun-giderme)  
+- [İletişim](#iletişim)  
 
 ---
 
