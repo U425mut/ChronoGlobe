@@ -95,13 +95,19 @@ http://127.0.0.1:5500/ChronoMap/index.html
 ## Veri yapıları — JSON şemaları
 
 ### `countries.geo.json`
-GeoJSON FeatureCollection formatında, her feature bir ülke.
+- **Tip:** GeoJSON FeatureCollection  
+- **İçerik:** Her feature bir ülke sınırlarını temsil eder.  
+- **Alanlar:** `properties.name`, `geometry` (Polygon/MultiPolygon).  
 
 ### `country-info.json`
-Ülke bilgileri, yıllara göre ayrılmış metadata.
+- **Tip:** JSON  
+- **İçerik:** Ülke bilgileri, yıllara göre ayrılmış metadata.  
+- **Alanlar:** `capital`, `population`, `area`, `history`, `languages`, `government`, `religion`.  
 
 ### `events.json`
-Ülkelerin yıllara göre önemli olayları.
+- **Tip:** JSON  
+- **İçerik:** Ülkelerin yıllara göre önemli olayları.  
+- **Alanlar:** `year`, `country`, `event`.  
 
 ---
 
