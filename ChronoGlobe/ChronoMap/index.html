@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChronoGlobe - Tarihsel Dünya Keşfi</title>
+
+  <!-- Stil Dosyaları -->
+  <link rel="stylesheet" href="style/style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <!-- Meta Etiketleri -->
+  <meta name="description" content="ChronoGlobe – Etkileşimli tarihsel dünya haritası ve zaman kontrolü." />
+  <meta name="keywords" content="harita, tarih, zaman çizgisi, ChronoGlobe, dünya haritası" />
+  <meta name="author" content="Umut" />
+
+
+</head>
+<body>
+  
+  <div class="app-container">
+
+    <!-- 🕒 Zaman Kontrol Paneli -->
+<header class="time-controller">
+  <div class="left-section">
+    <div class="country-search-wrapper">
+      <input type="text" id="country-search" placeholder="Ülke ara..." autocomplete="off" aria-label="Ülke arama kutusu" />
+      <ul id="country-search-results"></ul>
+    </div>
+  </div>
+
+  <div class="right-section">
+    <div class="year-nav">
+      <button id="btn-prev" aria-label="Önceki Yıl">&#9664;</button>
+      <span id="current-year">2025</span>
+      <button id="btn-next" aria-label="Sonraki Yıl">&#9654;</button>
+    </div>
+    <div class="year-slider-wrapper">
+      <label for="year-slider">Yıl:</label>
+      <input type="range" id="year-slider" min="2012" max="2025" value="2025" step="1" />
+      <span id="year-slider-value">2025</span>
+    </div>
+  </div>
+</header>
+
+
+
+    <!-- 🌍 Harita Alanı -->
+    <main class="world-screen">
+      <div class="map-frame">
+        <div id="leaflet-map"></div>
+      </div>
+    </main>
+
+    <!-- 📌 Küçük Navigasyon Paneli -->
+    <div id="mini-nav-panel" style="display:none;">
+      <button data-scroll="history-section">Ülke Hakkında</button>
+      <button data-scroll="events-section">Bu Yıl Ne Olmuş?</button>
+      <div id="about-submenu" style="display:none;">
+        <button data-scroll="kurulus">Kuruluş ve Erken Dönemler</button>
+        <button data-scroll="cografi">Coğrafi Konum ve Stratejik Önemi</button>
+        <button data-scroll="siyasi">Siyasi Gelişim Süreci</button>
+        <button data-scroll="toplumsal">Toplumsal Yapı ve Kültür</button>
+        <button data-scroll="ekonomik">Ekonomik Yapı ve Dönüşüm</button>
+        <button data-scroll="bilim">Bilim, Eğitim ve Teknoloji Tarihi</button>
+        <button data-scroll="sanat">Sanat, Edebiyat ve Estetik Kültürü</button>
+        <button data-scroll="askeri">Askeri Tarih ve Savaşlar</button>
+        <button data-scroll="diplomasi">Diplomasi ve Uluslararası İlişkiler</button>
+        <button data-scroll="modernlesme">Modernleşme Süreci ve Reformlar</button>
+        <button data-scroll="cagdas">Çağdaş Dönem ve Günümüzdeki Durumu</button>
+        <button data-scroll="miras">Tarihsel Miras ve Küresel Etki</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ℹ️ Bilgi Paneli -->
+  <aside id="info-panel" class="draggable resizable">
+
+    <header class="info-header">
+      <h2 id="country-name">Ülke Adı</h2>
+      <h3 id="selected-year">Yıl: 2025</h3>
+      <nav class="info-controls">
+        <button id="btn-expand" aria-label="Paneli büyüt/küçült">⛶</button>
+        <button id="btn-close" aria-label="Paneli kapat">✕</button>
+      </nav>
+    </header>
+
+    <!-- Temel Bilgiler -->
+    <section class="info-columns">
+      <div class="column-left">
+        <p><strong>Başkent:</strong> <span id="capital">Bilinmiyor</span></p>
+        <p><strong>Nüfus:</strong> <span id="population">Bilinmiyor</span></p>
+        <p><strong>Yüzölçümü:</strong> <span id="area">Bilinmiyor</span></p>
+        <p><strong>Nüfus Yoğunluğu:</strong> <span id="populationDensity">Bilinmiyor</span></p>
+        <p><strong>Kuruluş:</strong> <span id="founded">Bilinmiyor</span></p>
+        <p><strong>Diller:</strong> <span id="languages">Bilinmiyor</span></p>
+        <p><strong>Resmi Din:</strong> <span id="religion">Bilinmiyor</span></p>
+      </div>
+      <div class="column-right">
+        <p><strong>Yönetim Biçimi:</strong> <span id="government">Bilinmiyor</span></p>
+        <p><strong>Kıta:</strong> <span id="continent">Bilinmiyor</span></p>
+        <p><strong>Para Birimi:</strong> <span id="currency">Bilinmiyor</span></p>
+        <p><strong>Telefon Kodu:</strong> <span id="callingCode">Bilinmiyor</span></p>
+        <p><strong>İnternet Alan Kodu:</strong> <span id="internetCode">Bilinmiyor</span></p>
+        <p><strong>Komşular:</strong> <span id="borders">Bilinmiyor</span></p>
+      </div>
+    </section>
+
+    <!-- Ülke Hakkında -->
+    <section id="history-section">
+      <h3>Ülke Hakkında</h3>
+      <div id="history">
+        <section id="kurulus" class="history-subsection">
+          <h4>Kuruluş ve Erken Dönemler</h4>
+          <p>Henüz bilgi yok.</p>
+        </section>
+        <section id="cografi" class="history-subsection">
+          <h4>Coğrafi Konum ve Stratejik Önemi</h4>
+          <p>Henüz bilgi yok.</p>
+        </section>
+        <section id="siyasi" class="history-subsection">
+          <h4>Siyasi Gelişim Süreci</h4>
+          <p>Henüz bilgi yok.</p>
+        </section>
+        <section id="toplumsal" class="history-subsection">
+          <h4>Toplumsal Yapı ve Kültür</h4>
+          <p>Henüz bilgi yok.</p>
+        </section>
+        <section id="ekonomik" class="history-subsection">
+          <h4>Ekonomik Yapı ve Dönüşüm</h4>
+          <p>Henüz bilgi yok.</p>
+        </section>
+        <section id="bilim" class="history-subsection">
+          <h4>Bilim, Eğitim ve Teknoloji Tarihi</h4>
+          <p>Henüz bilgi yok.</p>
+        </section>
+        <section id="sanat" class="history-subsection">
+          <h4>Sanat, Edebiyat ve Estetik Kültürü</h4>
+          <p>Henüz bilgi yok.</p>
+        </section>
+        <section id="askeri" class="history-subsection">
+          <h4>Askeri Tarih ve Savaşlar</h4>
+          <p>Henüz bilgi yok.</p>
+        </section>
+        <section id="diplomasi" class="history-subsection">
+          <h4>Diplomasi ve Uluslararası İlişkiler</h4>
+          <p>Henüz bilgi yok.</p>
+        </section>
+        <section id="modernlesme" class="history-subsection">
+          <h4>Modernleşme Süreci ve Reformlar</h4>
+          <p>Henüz bilgi yok.</p>
+        </section>
+        <section id="cagdas" class="history-subsection">
+          <h4>Çağdaş Dönem ve Günümüzdeki Durumu</h4>
+          <p>Henüz bilgi yok.</p>
+        </section>
+        <section id="miras" class="history-subsection">
+          <h4>Tarihsel Miras ve Küresel Etki</h4>
+          <p>Henüz bilgi yok.</p>
+        </section>
+      </div>
+    </section>
+
+    <!-- Bu yıl ne olmuş -->
+    <section id="events-section" class="history-subsection">
+      <h3>Bu yıl ne olmuş?</h3>
+      <ul id="events-list">
+        <li>Henüz bilgi yok.</li>
+      </ul>
+    </section>
+
+  </aside>
+
+  <!-- Paneli tekrar açma butonu -->
+  <button id="reopen-panel" style="display:none;">ℹ️</button>
+
+
+
+<!-- JS Kütüphaneleri -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="js/map.js"></script>
+<script type="module" src="js/app.js"></script>
+
+<script>
+  (() => {
+    let countryNamesTR = {};
+    let geoJsonCountries = null;
+
+    const countrySearchInput = document.getElementById("country-search");
+    const countrySearchResults = document.getElementById("country-search-results");
+
+    // Yüklenen ülke isimlerini küçültülmüş ve hızlı arama için tutacağız
+    let searchableCountryNames = [];
+
+    // Seçilen ülkeyi global saklama
+    window.currentCountryEvent = null;
+
+    // Ülke isimlerini yükle
+    async function loadCountryNamesTR() {
+      const res = await fetch("data/country-names-tr.json");
+      if (!res.ok) throw new Error("country-names-tr.json yüklenemedi");
+      countryNamesTR = await res.json();
+    }
+
+    // countries.geo.json dosyasını yükle
+    async function loadGeoJsonCountries() {
+      const res = await fetch("data/countries.geo.json");
+      if (!res.ok) throw new Error("countries.geo.json yüklenemedi");
+      const geoJson = await res.json();
+      geoJsonCountries = geoJson.features || [];
+    }
+
+    // Arama sonuçlarını göster
+    function showSearchResults(results) {
+      if (!results.length) {
+        countrySearchResults.style.display = "none";
+        countrySearchResults.innerHTML = "";
+        return;
+      }
+      countrySearchResults.innerHTML = results
+        .map(cn => `<li class="search-item">${cn.tr}</li>`)
+        .join("");
+      countrySearchResults.style.display = "block";
+
+      // Click olaylarını ata
+      document.querySelectorAll(".search-item").forEach(item => {
+        item.addEventListener("click", () => {
+          onCountrySelectedFromSearch(item.textContent);
+        });
+      });
+    }
+
+    // Kullanıcı arama kutusuna yazdığında filtrele
+    countrySearchInput.addEventListener("input", () => {
+      const val = countrySearchInput.value.trim().toLowerCase();
+      if (!val) {
+        showSearchResults([]);
+        return;
+      }
+      const filtered = searchableCountryNames.filter(cn => cn.tr.toLowerCase().includes(val)).slice(0, 10);
+      showSearchResults(filtered);
+    });
+
+    // Arama dışına tıklanınca listeyi gizle
+    document.addEventListener("click", (e) => {
+      if (!countrySearchInput.contains(e.target) && !countrySearchResults.contains(e.target)) {
+        countrySearchResults.style.display = "none";
+      }
+    });
+
+    // Aramadan ülke seçildiğinde yapılacaklar
+    async function onCountrySelectedFromSearch(trName) {
+      countrySearchInput.value = trName;
+      countrySearchResults.style.display = "none";
+
+      // İngilizce adı bul (geoJsonCountries'da properties.name alanı)
+      const found = geoJsonCountries.find(c =>
+        (countryNamesTR[c.properties.name] || c.properties.name) === trName
+      );
+
+      if (!found) {
+        alert("Ülke bulunamadı.");
+        return;
+      }
+
+      const engName = found.properties.name;
+
+      window.currentCountryEvent = { name: engName };
+      document.getElementById("country-name").textContent = trName;
+      const year = Number(document.getElementById("year-slider").value);
+      document.getElementById("selected-year").textContent = `Yıl: ${year}`;
+
+      // Haritada ülkeyi seç (map.js içindeki fonksiyonu çağır)
+      if (window.selectCountryOnMap) {
+        window.selectCountryOnMap(engName);
+      }
+
+      // country:selected eventini tetikle (diğer modüller için)
+      window.dispatchEvent(new CustomEvent("country:selected", { detail: { name: engName } }));
+    }
+
+    // Sayfa yüklendiğinde verileri yükle ve hazırla
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        await loadCountryNamesTR();
+        await loadGeoJsonCountries();
+
+        // searchableCountryNames oluştur (geoJsonCountries + tr isim eşlemesi)
+        searchableCountryNames = geoJsonCountries.map(c => ({
+          eng: c.properties.name,
+          tr: countryNamesTR[c.properties.name] || c.properties.name
+        }));
+
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  })();
+
+  // Diğer mevcut scriptler zaten burada, onları koruyabiliriz
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    initPanelControls();
+    initYearControls();
+  });
+
+  // Ülke seçildiğinde çalışır (country-info.json'dan verileri alır)
+  window.addEventListener("country:selected", (event) => {
+    const { name } = event.detail;
+    const year = Number(document.getElementById("year-slider").value);
+
+    // Ülke adını türkçeye çevir
+    fetch("data/country-names-tr.json")
+      .then(res => res.json())
+      .then(countryNamesTR => {
+        const translatedName = countryNamesTR[name] || name;
+        document.getElementById("country-name").textContent = translatedName;
+      })
+      .catch(err => {
+        console.error("Ülke isimleri çevirisi yüklenemedi:", err);
+        document.getElementById("country-name").textContent = name;
+      });
+
+    document.getElementById("selected-year").textContent = `Yıl: ${year}`;
+
+    // Ülke verilerini JSON'dan çek
+    fetch("data/country-info.json")
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(json => {
+        const countryData = json[name];
+        const yearData = countryData?.years?.[year] || {};
+
+        const updateField = (id, value, fallback = "Bilinmiyor") => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = (value !== undefined && value !== null) ? value : fallback;
+        };
+
+        // Sabit alanlar + nüfus/alan/yoğunluk country-info.json'dan
+        [
+          "capital", "founded", "languages", "government", "religion",
+          "continent", "currency", "callingCode", "internetCode", "borders",
+          "population", "area", "populationDensity"
+        ].forEach(id => updateField(id, yearData[id]));
+
+        // 📜 Tarihçe
+        const historyEl = document.getElementById("history");
+        if (yearData.content && typeof yearData.content === "object") {
+          const html = Object.entries(yearData.content)
+            .map(([title, text]) => `
+              <div class="history-section">
+                <h4>${title}</h4>
+                <p>${text || "Bilgi bulunamadı."}</p>
+              </div>
+            `).join("");
+          historyEl.innerHTML = html;
+        } else {
+          historyEl.textContent = "Henüz tarihsel bilgi bulunamadı.";
+        }
+
+        // 📅 Bu yıl ne olmuş? (events.json'dan al)
+        fetch("data/events.json")
+          .then(res => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.json();
+          })
+          .then(eventsData => {
+            const eventsForYear = eventsData[name]?.[year] || ["Bu yıl için kayıtlı olay yok."];
+            const eventsListEl = document.getElementById("events-list");
+            if (eventsListEl) {
+              eventsListEl.innerHTML = eventsForYear.map(e => `<li>${e}</li>`).join("");
+            }
+          })
+          .catch(err => console.error("events.json yüklenemedi:", err));
+
+      })
+      .catch(err => console.error("country-info.json yüklenemedi:", err));
+  });
+
+  function initPanelControls() {
+    const panel = document.getElementById("info-panel");
+    const btnExpand = document.getElementById("btn-expand");
+    const btnClose = document.getElementById("btn-close");
+    const btnReopen = document.getElementById("reopen-panel");
+
+    if (btnExpand) {
+      btnExpand.addEventListener("click", () => {
+        panel.classList.toggle("fullscreen");
+        btnExpand.textContent = panel.classList.contains("fullscreen") ? "⤫" : "⛶";
+      });
+    }
+
+    if (btnClose) {
+      btnClose.addEventListener("click", () => {
+        panel.style.display = "none";
+        if (btnReopen) btnReopen.style.display = "block";
+      });
+    }
+
+    if (btnReopen) {
+      btnReopen.addEventListener("click", () => {
+        panel.style.display = "block";
+        btnReopen.style.display = "none";
+      });
+    }
+  }
+
+  function initYearControls() {
+    const slider = document.getElementById("year-slider");
+    const currentYear = document.getElementById("current-year");
+    const yearValue = document.getElementById("year-slider-value");
+    const selectedYear = document.getElementById("selected-year");
+    const footerYear = document.getElementById("footer-year");
+    const btnPrev = document.getElementById("btn-prev");
+    const btnNext = document.getElementById("btn-next");
+
+    // güvenli parse helper
+    const toInt = (v, fallback = 0) => {
+      const n = Number(v);
+      return Number.isNaN(n) ? fallback : n;
+    };
+
+    const updateYear = (year) => {
+      year = toInt(year, 2025);
+      if (currentYear) currentYear.textContent = year;
+      if (yearValue) yearValue.textContent = year;
+      if (selectedYear) selectedYear.textContent = `Yıl: ${year}`;
+      if (footerYear) footerYear.textContent = year;
+      if (slider) slider.value = year;
+
+      // app.js veya diğer modüllere haber ver
+      window.dispatchEvent(new CustomEvent("year:changed", { detail: { year } }));
+
+      // Eğer ülke seçiliyse bilgileri güncelle
+      if (window.currentCountryEvent) {
+        window.dispatchEvent(new CustomEvent("country:selected", { detail: window.currentCountryEvent }));
+      }
+    };
+
+    if (slider) {
+      slider.addEventListener("input", (e) => updateYear(toInt(e.target.value)));
+    }
+
+    if (btnPrev) {
+      btnPrev.addEventListener("click", () => {
+        const min = toInt(slider.min, 2012);
+        const val = toInt(slider.value, 2025);
+        updateYear(Math.max(min, val - 1));
+      });
+    }
+
+    if (btnNext) {
+      btnNext.addEventListener("click", () => {
+        const max = toInt(slider.max, 2025);
+        const val = toInt(slider.value, 2025);
+        updateYear(Math.min(max, val + 1));
+      });
+    }
+
+    // başlangıç değeri
+    updateYear(toInt(slider?.value ?? 2025));
+  }
+
+  // Seçilen ülkeyi globalde sakla (slider yıl değişiminde yeniden yayınlama için)
+  window.addEventListener("country:selected", (e) => {
+    window.currentCountryEvent = e.detail;
+  });
+
+  // Mini nav scroll eventleri
+  document.querySelectorAll('#mini-nav-panel [data-scroll]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-scroll');
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
