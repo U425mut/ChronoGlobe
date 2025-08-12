@@ -78,7 +78,6 @@ git clone https://github.com/<kullanici>/ChronoGlobe.git
 cd ChronoGlobe/ChronoMap
 ```
 
-
 2. Lokal server başlat:
 ```bash
 npx http-server -c-1 -p 8080 .
