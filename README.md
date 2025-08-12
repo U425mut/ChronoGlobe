@@ -44,31 +44,28 @@ ChronoGlobe; HTML/CSS/JS + [Leaflet](https://leafletjs.com) tabanlı, veri kayna
 ## Proje mimarisi ve dosya yapısı
 
 ```
-ChronoGlobe/
-├─ index.html
-├─ README.md
-├─ LICENSE
-├─ .gitignore
-├─ style/
-│  └─ style.css
-├─ js/
-│  ├─ app.js
-│  └─ map.js
-├─ data/
-│  ├─ countries.geo.json
-│  ├─ country-names-tr.json
-│  ├─ country-info.json
-│  ├─ events.json
-│  └─ geo/
-│     ├─ 2011/
-│     │  └─ countries.geo.json
-│     └─ 2025/
-│        └─ countries.geo.json
-├─ tools/
-│  └─ make-2011-world.js
-├─ package.json
-└─ .github/
-   └─ workflows/ci.yml
+CHRONOGLOBE/
+└── ChronoMap/
+    ├── data/
+    │   ├── countries.geo.json
+    │   ├── country-info.json
+    │   ├── country-names-tr.json
+    │   └── events.json
+    │
+    ├── js/
+    │   ├── app.js
+    │   ├── documentation.html
+    │   ├── license.txt
+    │   ├── map.js
+    │   └── test.html
+    │
+    ├── style/
+    │   └── style.css
+    │
+    ├── index.html
+    ├── LICENSE
+    └── README.md
+
 ```
 
 ---
