@@ -78,21 +78,17 @@ git clone https://github.com/<kullanici>/ChronoGlobe.git
 cd ChronoGlobe/ChronoMap
 ```
 
-2. (Opsiyonel) npm paketleri kur:
-```bash
-npm install
-```
 
-3. Lokal server başlat:
+2. Lokal server başlat:
 ```bash
 npx http-server -c-1 -p 8080 .
 # veya
 python -m http.server 8080
 ```
 
-4. Tarayıcıda aç:
+3. Tarayıcıda aç:
 ```
-http://localhost:8080
+http://127.0.0.1:5500/ChronoMap/index.html
 ```
 
 ---
