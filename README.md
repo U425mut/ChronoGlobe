@@ -12,15 +12,15 @@
 2. [Öne çıkan özellikler](#öne-çıkan-özellikler)  
 3. [Proje mimarisi ve dosya yapısı](#proje-mimarisi-ve-dosya-yapısı)  
 4. [Hızlı başlama (local)](#hızlı-başlama-local)  
-5. [Veri yapıları — JSON şemaları](#veri-yapıları---json-şemaları)  
-6. [2011 Dünya / Tarihsel snapshot oluşturma — adım adım](#2011-dünya--tarihsel-snapshot-oluşturma---adım-adım)  
-7. [Coğrafi verilerle çalışmak — pratik ipuçları](#coğrafi-verilerle-çalışmak---pratik-ipuçları)  
-8. [map.js: önerilen geliştirmeler](#mapjs-önerilen-geliştirmeler)  
+5. [Veri yapıları — JSON şemaları](#veri-yapıları--json-şemaları)  
+6. [2011 Dünya / Tarihsel snapshot oluşturma — adım adım](#2011-dünya--tarihsel-snapshot-oluşturma--adım-adım)  
+7. [Coğrafi verilerle çalışmak — pratik ipuçları](#coğrafi-verilerle-çalışmak--pratik-ipuçları)  
+8. [map.js: önerilen geliştirmeler](#mapjs-önerilen-gelistirmeler)  
 9. [Katkıda bulunma rehberi](#katkıda-bulunma-rehberi)  
-10. [Lisans ve .gitignore önerisi](#lisans-ve-gitignore-önerisi)  
-11. [Gelişmiş öneriler](#gelişmiş-öneriler)  
+10. [Lisans ve .gitignore önerisi](#lisans-ve-gitignore-onerisi)  
+11. [Gelişmiş öneriler](#gelismis-oneriler)  
 12. [SSS & sorun giderme](#sss--sorun-giderme)  
-13. [İletişim](#iletişim)  
+13. [İletişim](#iletisim)  
 
 ---
 
