@@ -774,3 +774,40 @@ main {
 footer {
   margin-top: auto;
 }
+/* Footer Genel Stili */
+footer {
+  background-color: #1a1a1a;        /* Koyu arka plan */
+  color: #ddd;                      /* Açık yazı rengi */
+  text-align: center;
+  font-size: 12px;
+  padding: 15px 20px;
+  margin-top: 20px;
+  border-top: 1px solid #444;       /* Hafif üst sınır çizgisi */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Link Stili */
+footer a {
+  color: #4da6ff;                   /* Mavi tonlu linkler */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+footer a:hover {
+  color: #1a8cff;                   /* Hover efekti */
+  text-decoration: underline;
+}
+
+/* Footer paragraf stili */
+footer p {
+  margin: 0;                         /* Gereksiz boşluk kaldır */
+  line-height: 1.5;                  /* Satırlar arası rahat okuma */
+}
+
+/* Responsive: Küçük ekranlarda padding küçült */
+@media screen and (max-width: 600px) {
+  footer {
+    font-size: 11px;
+    padding: 10px;
+  }
+}
