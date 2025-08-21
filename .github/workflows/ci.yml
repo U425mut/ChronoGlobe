@@ -1,0 +1,37 @@
+name: Deploy ChronoGlobe to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main   # sadece main branch'e push olduğunda çalışır
+  workflow_dispatch: # manuel çalıştırmaya da izin verir
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Eğer build süreci olsaydı buraya eklenirdi.
+      # Ama senin proje statik olduğu için direkt deploy yapıyoruz.
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./ChronoGlobe/ChronoMap  # Senin index.html'in bulunduğu klasör
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
