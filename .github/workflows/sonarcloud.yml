@@ -1,52 +1,71 @@
-name: SonarCloud
+name: CI + SonarCloud
+
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    types: [opened, synchronize, reopened]
-    branches:
-      - main
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
-  build:
-    name: Build and Analyze
+  analyze:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Daha iyi analiz için tüm geçmişi getirir
+          fetch-depth: 0
 
-      - name: Set up JDK 17
+      - name: Set up JDK (Sonar scanner needs Java)
         uses: actions/setup-java@v4
         with:
-          java-version: 17
-          distribution: 'temurin'
+          distribution: temurin
+          java-version: '17'
 
-      - name: Cache SonarCloud packages
+      # package.json VARSA Node adımlarını çalıştır
+      - name: Detect package.json
+        id: has_pkg
+        run: |
+          if [ -f package.json ]; then
+            echo "present=true" >> $GITHUB_OUTPUT
+          else
+            echo "present=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up Node.js (only if package.json exists)
+        if: steps.has_pkg.outputs.present == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'   # caching yok -> lock file gerektirmez
+
+      - name: Install dependencies (only if package.json exists)
+        if: steps.has_pkg.outputs.present == 'true'
+        run: |
+          # Lock dosyası varsa hızlı ve deterministik kurulum
+          if [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ] || [ -f yarn.lock ]; then
+            npm ci --ignore-scripts || npm install --ignore-scripts
+          else
+            # Lock yoksa normal kurulum (hata vermez)
+            npm install --ignore-scripts
+          fi
+
+      - name: Run tests (only if package.json exists)
+        if: steps.has_pkg.outputs.present == 'true'
+        run: npm test --if-present
+
+      - name: Cache Sonar packages
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: Cache Node.js modules
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm test
-
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # PR yorumları için
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    # Senin SonarCloud secret’in
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # PR yorumu / durumu için
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}     # Settings > Secrets’ta eklediniz
