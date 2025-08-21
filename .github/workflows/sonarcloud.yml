@@ -1,4 +1,5 @@
 name: SonarCloud
+
 on:
   push:
     branches:
@@ -14,16 +15,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # 1. Kod deposunu al
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Daha iyi analiz için tüm geçmişi getirir
+          fetch-depth: 0  # Tüm geçmiş analiz için gerekli
 
+      # 2. JDK 17 (bazı Sonar analizleri için gerekli olabilir)
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: 'temurin'
 
+      # 3. Node.js ortamı kur
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      # 4. SonarCloud cache
       - name: Cache SonarCloud packages
         uses: actions/cache@v4
         with:
@@ -31,20 +43,15 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: Cache Node.js modules
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
+      # 5. Bağımlılıkları yükle
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Run tests
-        run: npm test
+      # 6. Testleri çalıştır ve coverage üret
+      - name: Run tests with coverage
+        run: npm test -- --coverage --watchAll=false
 
+      # 7. SonarCloud Analizi
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
