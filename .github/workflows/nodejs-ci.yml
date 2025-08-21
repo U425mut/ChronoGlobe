@@ -1,0 +1,70 @@
+name: ChronoGlobe CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x] # Farklı Node sürümlerinde dene
+
+    steps:
+    - name: 📥 Repo Kopyala
+      uses: actions/checkout@v3
+
+    - name: ⚙️ Node.js Kur
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: 📦 Paketleri Yükle
+      run: npm install
+
+    - name: 🔍 Kod Kalitesi (Lint Check)
+      run: |
+        if [ -f package.json ] && grep -q "\"lint\":" package.json; then
+          npm run lint
+        else
+          echo "⚠️ Lint script tanımlı değil, atlandı."
+        fi
+
+    - name: 🏗️ Build (opsiyonel)
+      run: |
+        if [ -f package.json ] && grep -q "\"build\":" package.json; then
+          npm run build
+        else
+          echo "⚠️ Build script tanımlı değil, atlandı."
+        fi
+
+    - name: ✅ Testleri Çalıştır
+      run: |
+        if [ -f package.json ] && grep -q "\"test\":" package.json; then
+          npm test
+        else
+          echo "⚠️ Test script tanımlı değil, atlandı."
+        fi
+
+  security-check:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 📥 Repo Kopyala
+      uses: actions/checkout@v3
+
+    - name: ⚙️ Node.js Kur
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20.x
+        cache: 'npm'
+
+    - name: 📦 Paketleri Yükle
+      run: npm install
+
+    - name: 🛡️ Güvenlik Açığı Taraması
+      run: npm audit --audit-level=moderate
