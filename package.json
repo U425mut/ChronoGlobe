@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/U425mut/ChronoGlobe/issues"
   },
-  "homepage": "https://github.com/U425mut/ChronoGlobe#readme"
+  "homepage": "https://github.com/U425mut/ChronoGlobe#readme",
+  "devDependencies": {
+    "jest": "^30.0.5"
+  }
 }
