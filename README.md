@@ -13,7 +13,6 @@
 - [Proje mimarisi ve dosya yapısı](#proje-mimarisi-ve-dosya-yapısı)  
 - [Hızlı başlama (local)](#hızlı-başlama-local)  
 - [Veri yapıları — JSON şemaları](#veri-yapıları--json-şemaları)  
-- [2011 Dünya / Tarihsel snapshot oluşturma — adım adım](#2011-dünya--tarihsel-snapshot-oluşturma--adım-adım)  
 - [Coğrafi verilerle çalışmak — pratik ipuçları](#coğrafi-verilerle-çalışmak--pratik-ipuçları)  
 - [map.js: önerilen geliştirmeler](#mapjs-önerilen-geliştirmeler)  
 - [Katkıda bulunma rehberi](#katkıda-bulunma-rehberi)  
