@@ -1,0 +1,20 @@
+{
+  "name": "chronoglobe",
+  "version": "1.0.0",
+  "description": "**ChronoGlobe** — tarihsel dünya haritası ve zaman kontrolü aracı. Harita üzerinden yıllara göre (zaman çizgisi) ülke bilgilerini, olayları görselleştiren, interaktif, açık kaynaklı bir web uygulaması.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/U425mut/ChronoGlobe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/U425mut/ChronoGlobe/issues"
+  },
+  "homepage": "https://github.com/U425mut/ChronoGlobe#readme"
+}
