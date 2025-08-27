@@ -811,3 +811,61 @@ footer p {
     padding: 10px;
   }
 }
+
+/* 🌟 ChronoGlobe Davet Kutusu */
+#invite-box {
+  margin-top: 10px;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: #fff;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  font-family: "Segoe UI", sans-serif;
+  max-width: 320px;
+  animation: fadeIn 1.5s ease;
+}
+
+#invite-box h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#invite-box p {
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.invite-btn {
+  background: #24292e;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.invite-btn:hover {
+  background: #0366d6;
+  transform: translateY(-2px);
+}
+
+.github-logo {
+  width: 20px;
+  height: 20px;
+}
+
+/* Küçük animasyon */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 📌 Bilgi panelini aşağı itmek için boşluk */
+#info-panel {
+  margin-top: 80px; /* reklam için üstte boşluk bırakır */
+}
