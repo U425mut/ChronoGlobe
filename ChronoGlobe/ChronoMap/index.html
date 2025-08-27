@@ -349,19 +349,21 @@
         ].forEach(id => updateField(id, yearData[id]));
 
         // 📜 Tarihçe
-        const historyEl = document.getElementById("history");
-        if (yearData.content && typeof yearData.content === "object") {
-          const html = Object.entries(yearData.content)
-            .map(([title, text]) => `
-              <div class="history-section">
-                <h4>${title}</h4>
-                <p>${text || "Bilgi bulunamadı."}</p>
-              </div>
-            `).join("");
-          historyEl.innerHTML = html;
-        } else {
-          historyEl.textContent = "Henüz tarihsel bilgi bulunamadı.";
-        }
+        // 📜 Tarihçe
+     const historyEl = document.getElementById("history");
+     if (countryData.content && typeof countryData.content === "object") {
+       const html = Object.entries(countryData.content)
+         .map(([title, text]) => `
+           <div class="history-section">
+             <h4>${title}</h4>
+             <p>${text || "Bilgi bulunamadı."}</p>
+           </div>
+         `).join("");
+       historyEl.innerHTML = html;
+     } else {
+       historyEl.textContent = "Henüz tarihsel bilgi bulunamadı.";
+     }
+     
 
         // 📅 Bu yıl ne olmuş? (events.json'dan al)
         fetch("data/events.json")
