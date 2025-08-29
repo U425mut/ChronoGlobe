@@ -172,12 +172,56 @@
     showCountryDetails(name, state.currentYear);
   });
 
+  // Davet kutusunu sürüklenebilir yap
+  function initInviteDrag() {
+    const invite = document.getElementById("invite-cta");
+    if (!invite) return;
+
+    let isDragging = false;
+    let offsetX, offsetY;
+
+    // Başlangıç pozisyonunu sakla (geri dönmek için)
+    const startX = invite.offsetLeft;
+    const startY = invite.offsetTop;
+
+    invite.addEventListener("mousedown", (e) => {
+  isDragging = true;
+  const rect = invite.getBoundingClientRect();
+  offsetX = e.clientX - rect.left;
+  offsetY = e.clientY - rect.top;
+  invite.style.transition = "none"; 
+  invite.style.position = "fixed"; // 📌 viewport’a sabitle
+});
+
+
+    document.addEventListener("mousemove", (e) => {
+  if (!isDragging) return;
+  invite.style.left = (e.clientX - offsetX) + "px";
+  invite.style.top = (e.clientY - offsetY) + "px";
+});
+
+
+    document.addEventListener("mouseup", () => {
+  if (isDragging) {
+    isDragging = false;
+    invite.style.transition = "all 0.6s cubic-bezier(.68,-0.55,.27,1.55)";
+    invite.style.left = startX + "px";
+    invite.style.top = startY + "px";
+  }
+});
+
+  }
+
   // DOMContentLoaded
   document.addEventListener("DOMContentLoaded", async () => {
     await loadCountryNamesTR();
     initYearControls();
     onYearChange(state.currentYear);
     initMiniNavPanel();
+
+    // 🚀 Davet kutusunu aktif et
+    initInviteDrag();
   });
+
 
 })();

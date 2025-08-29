@@ -923,6 +923,7 @@ footer p {
 #info-panel.fullscreen .info-content {
   max-height: calc(100% - 120px);
 }
+/* --- DAVET KUTUSU ANİMASYONLU --- */
 #invite-cta {
   display: flex;
   align-items: center;
@@ -933,9 +934,56 @@ footer p {
   color: #fff;
   box-shadow: 0 6px 16px rgba(0,0,0,.25);
   max-width: 420px;
-  position: static; /* akışta kalacak */
+  position: relative;
+  overflow: hidden;
+
+  /* Başlangıç konumu: çaprazda gizli */
+  opacity: 0;
+  transform: translate(-150%, -150%) rotate(-25deg) scale(0.9);
 }
 
+#invite-cta.crash {
+  animation: crashIn 1.2s cubic-bezier(.68,-0.55,.27,1.55) forwards;
+  z-index: 2000;
+}
+
+@keyframes crashIn {
+  0% {
+    opacity: 0;
+    transform: translate(-150%, -150%) rotate(-25deg) scale(0.9);
+  }
+  70% {
+    opacity: 1;
+    transform: translate(20px, 10px) rotate(5deg) scale(1.05);
+  }
+  85% {
+    transform: translate(-8px, 4px) rotate(-3deg) scale(0.98);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0) scale(1);
+    opacity: 1;
+  }
+}
+
+#invite-cta::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.2), transparent 70%);
+  opacity: 0;
+  transform: scale(0.5);
+  pointer-events: none;
+}
+
+#invite-cta.crash::before {
+  animation: crackEffect 0.8s ease-out forwards;
+}
+
+@keyframes crackEffect {
+  0% { opacity: 0; transform: scale(0.5); }
+  40% { opacity: 0.6; transform: scale(1.3); }
+  100% { opacity: 0; transform: scale(2); }
+}
 
 #invite-cta a {
   font-weight: bold;
@@ -946,4 +994,28 @@ footer p {
 #invite-cta em {
   font-style: italic;
   color: #ddd;
+}
+
+#invite-cta {
+  position: relative;
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.6s cubic-bezier(.68,-0.55,.27,1.55);
+}
+
+#invite-cta.dragging {
+  cursor: grabbing;
+  transition: none; /* sürüklerken animasyon kapalı */
+}
+#invite-cta a {
+  font-weight: bold;
+  color: #4da3ff;
+  text-decoration: none;
+  transition: color 0.25s ease, text-shadow 0.25s ease;
+}
+
+#invite-cta a:hover {
+  color: #66b3ff;                        /* daha açık mavi */
+  text-shadow: 0 0 6px rgba(77,163,255,.7);
+  text-decoration: underline;            /* istersen alt çizgi */
 }
