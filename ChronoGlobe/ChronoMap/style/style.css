@@ -33,17 +33,38 @@ html, body {
 
 /* ========= ZAMAN KONTROL PANELİ ========= */
 .time-controller {
+  position: relative;         /* içinde absolute eleman kullanacağız */
   display: flex;
-  flex-direction: column;
+  justify-content: center;    /* sağdaki zaman panelini ortala */
   align-items: center;
-  gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
   padding: 0.8rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
   backdrop-filter: blur(6px);
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
   animation: fadeInTop 1s ease-in-out;
 }
+
+
+
+.left-section {
+  position: absolute;  /* sabit konumlandır */
+  left: 20px;          /* sol tarafa sabitle */
+  display: flex;
+  align-items: center;
+  gap: 1rem;           /* arama ↔ davet aralığı */
+}
+
+
+.right-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+
+
 
 @keyframes fadeInTop {
   from { opacity: 0; transform: translateY(-20px); }
@@ -169,11 +190,11 @@ button:hover {
 /* ========= BİLGİ PANELİ ========= */
 #info-panel {
   position: absolute;
-  top: 50px;
+  top: 130px; /* ✅ zaman kontrol panelinin altı */
   right: 20px;
   width: 320px;
   min-width: 250px;
-  max-height: 80vh;
+  max-height: calc(100vh - 140px); /* ✅ ekranın altına taşmasın */
   background-color: #311515;
   border: 2px solid #ccc;
   border-radius: 10px;
@@ -182,8 +203,9 @@ button:hover {
   overflow: auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
-  backdrop-filter: blur(4px); /* ✅ Yeni: Arka plan bulanıklığı ekledik */
+  backdrop-filter: blur(4px);
 }
+
 
 
 /* === TAM EKRAN MODU === */
@@ -595,28 +617,20 @@ button:hover {
 
 /* Arama kutusu ve sonuç listesi için stiller */
 
-.time-controller {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 10px;
-  justify-content: flex-start;
-  width: 100%;
-}
+
 
 .country-search-wrapper {
-  position: absolute;
-  top: 15px;
-  left: 15px;
+  position: static;        /* akışa geri al */
   max-width: 280px;
-  width: 100%;
-  z-index: 1100;
-  background: rgba(0, 0, 0, 0.6); /* Yarı saydam arka plan */
+  width: 280px;            /* sabit genişlik */
+  background: rgba(0, 0, 0, 0.6);
   border-radius: 8px;
   padding: 6px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-  backdrop-filter: blur(4px); /* Cam efekti */
+  backdrop-filter: blur(4px);
 }
+
+
 
 #country-search {
   width: 100%;
@@ -812,60 +826,124 @@ footer p {
   }
 }
 
-/* 🌟 ChronoGlobe Davet Kutusu */
-#invite-box {
-  margin-top: 10px;
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
+/* --- ÜST BAR YERLEŞİMİ --- */
+.time-controller .left-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;           /* arama ile davet kutusu arası boşluk */
+  flex-wrap: wrap;     /* dar ekranda alta kayabilsin */
+}
+
+/* --- DAVET KUTUSU (compact) --- */
+#invite-cta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1f3b73, #2a5ba8);
   color: #fff;
-  padding: 15px 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  font-family: "Segoe UI", sans-serif;
-  max-width: 320px;
-  animation: fadeIn 1.5s ease;
+  box-shadow: 0 6px 16px rgba(0,0,0,.25);
+  max-width: 420px;             /* üst barı bozmasın */
+
+  /* 🔽 Senin istediğin sola kaydırma */
+
 }
 
-#invite-box h3 {
-  margin: 0 0 8px;
-  font-size: 18px;
-  font-weight: bold;
+#invite-cta .invite-text {
+  font-size: 12.5px;
+  line-height: 1.35;
 }
 
-#invite-box p {
-  margin: 0 0 12px;
+#invite-cta .invite-text strong {
+  display: block;
   font-size: 14px;
-  line-height: 1.4;
+  margin-bottom: 2px;
 }
 
-.invite-btn {
-  background: #24292e;
-  color: white;
-  padding: 8px 14px;
-  border-radius: 6px;
+#invite-cta .invite-btn {
+  white-space: nowrap;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: background 0.3s ease, transform 0.2s ease;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #24292e;
+  color: #fff;
+  transition: transform .2s ease, background .25s ease;
 }
 
-.invite-btn:hover {
+#invite-cta .invite-btn:hover {
   background: #0366d6;
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
-.github-logo {
-  width: 20px;
-  height: 20px;
+#invite-cta .github-logo {
+  width: 18px;
+  height: 18px;
 }
 
-/* Küçük animasyon */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* dar ekranda daveti gizlemek istersen */
+@media (max-width: 1100px) {
+  #invite-cta { display: none; }
 }
 
-/* 📌 Bilgi panelini aşağı itmek için boşluk */
+/* --- BİLGİ PANELİ: ÜSTTE REKLAM ALANI --- */
 #info-panel {
-  margin-top: 80px; /* reklam için üstte boşluk bırakır */
+  /* mevcut stilin kalsın; margin-top EKLEMİYORUZ */
+  overflow: hidden;             /* iç scroll'u info-content alacak */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Reklam için ayrılan üst şerit */
+#info-panel .info-ad-slot {
+  height: 120px;                /* reklam yüksekliği */
+  background: rgba(255, 152, 0, 0.1);
+  border-bottom: 1px dashed rgba(255, 152, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#info-panel .info-ad-slot .ad-placeholder {
+  font-size: 12px;
+  color: #ffb74d;
+}
+
+/* Panel içeriği reklamın altında ayrı bir scroll alanı olarak çalışsın */
+#info-panel .info-content {
+  overflow: auto;
+  max-height: calc(100% - 120px);  /* toplam yükseklikten reklam yüksekliğini çıkar */
+  padding-bottom: 12px;             /* dip boşluk */
+}
+
+/* İstersen panel büyütülünce de aynı davranış sürsün */
+#info-panel.fullscreen .info-content {
+  max-height: calc(100% - 120px);
+}
+#invite-cta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1f3b73, #2a5ba8);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(0,0,0,.25);
+  max-width: 420px;
+  position: static; /* akışta kalacak */
+}
+
+
+#invite-cta a {
+  font-weight: bold;
+  color: #4da3ff;
+  text-decoration: none;
+}
+
+#invite-cta em {
+  font-style: italic;
+  color: #ddd;
 }
