@@ -1,6 +1,3 @@
-
-
-
 # ChronoGlobe
 
 **ChronoGlobe** — tarihsel dünya haritası ve zaman kontrolü aracı. Harita üzerinden yıllara göre (zaman çizgisi) ülke bilgilerini, olayları görselleştiren, interaktif, açık kaynaklı bir web uygulaması.
@@ -177,5 +174,4 @@ dist/
 
 Sorularınız için repo üzerinden issue açabilirsiniz.
 
-
-
+"DENEME"
