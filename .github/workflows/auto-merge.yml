@@ -1,0 +1,31 @@
+name: Auto-Approve & Merge PR
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  auto-approve-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # PR'ı otomatik onayla
+      - uses: hmarr/auto-approve-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Opsiyonel: Testleri burada çalıştırabilirsin
+      # - name: Run Tests
+      #   run: ./run-tests.sh
+
+      # PR'ı merge et
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              merge_method: "squash" # "merge" veya "rebase" da seçebilirsin
+            })
