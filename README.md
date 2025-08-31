@@ -174,8 +174,4 @@ dist/
 
 Sorularınız için repo üzerinden issue açabilirsiniz.
 
-"deneme"
 
-
-
-"de
