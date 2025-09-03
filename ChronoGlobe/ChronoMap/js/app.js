@@ -1,3 +1,4 @@
+
 (() => {
   // Global state
   const state = {
