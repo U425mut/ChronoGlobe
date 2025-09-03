@@ -49,7 +49,7 @@
     </div>
     <div class="year-slider-wrapper">
       <label for="year-slider">Yıl:</label>
-      <input type="range" id="year-slider" min="2012" max="2025" value="2025" step="1" />
+      <input type="range" id="year-slider" min="2011" max="2025" value="2025" step="1" />
       <span id="year-slider-value">2025</span>
     </div>
   </div>
@@ -217,12 +217,18 @@
     }
 
     // countries.geo.json dosyasını yükle
-    async function loadGeoJsonCountries() {
-      const res = await fetch("data/countries.geo.json");
-      if (!res.ok) throw new Error("countries.geo.json yüklenemedi");
-      const geoJson = await res.json();
-      geoJsonCountries = geoJson.features || [];
-    }
+    async function loadGeoJsonCountries(year = 2025) {
+  let file = "data/countries.geo.json";
+  if (year === 2011) {
+    file = "data/countries.geo.2011.json";
+  }
+
+  const res = await fetch(file);
+  if (!res.ok) throw new Error(`${file} yüklenemedi`);
+  const geoJson = await res.json();
+  geoJsonCountries = geoJson.features || [];
+}
+
 
     // Arama sonuçlarını göster
     function showSearchResults(results) {
@@ -455,22 +461,26 @@
       return Number.isNaN(n) ? fallback : n;
     };
 
-    const updateYear = (year) => {
-      year = toInt(year, 2025);
-      if (currentYear) currentYear.textContent = year;
-      if (yearValue) yearValue.textContent = year;
-      if (selectedYear) selectedYear.textContent = `Yıl: ${year}`;
-      if (footerYear) footerYear.textContent = year;
-      if (slider) slider.value = year;
+const updateYear = (year) => {
+  year = toInt(year, 2025);
+  if (currentYear) currentYear.textContent = year;
+  if (yearValue) yearValue.textContent = year;
+  if (selectedYear) selectedYear.textContent = `Yıl: ${year}`;
+  if (footerYear) footerYear.textContent = year;
+  if (slider) slider.value = year;
 
-      // app.js veya diğer modüllere haber ver
-      window.dispatchEvent(new CustomEvent("year:changed", { detail: { year } }));
+  // 🌍 Seçilen yıla uygun GeoJSON dosyasını yeniden yükle
+  loadGeoJsonCountries(year);
 
-      // Eğer ülke seçiliyse bilgileri güncelle
-      if (window.currentCountryEvent) {
-        window.dispatchEvent(new CustomEvent("country:selected", { detail: window.currentCountryEvent }));
-      }
-    };
+  // app.js veya diğer modüllere haber ver
+  window.dispatchEvent(new CustomEvent("year:changed", { detail: { year } }));
+
+  // Eğer ülke seçiliyse bilgileri güncelle
+  if (window.currentCountryEvent) {
+    window.dispatchEvent(new CustomEvent("country:selected", { detail: window.currentCountryEvent }));
+  }
+};
+
 
     if (slider) {
       slider.addEventListener("input", (e) => updateYear(toInt(e.target.value)));
