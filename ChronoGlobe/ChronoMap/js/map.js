@@ -11,38 +11,38 @@ const map = L.map("leaflet-map", {
   worldCopyJump: true
 }).setView([20, 0], 1);
 
-// 🗺️ OpenStreetMap katmanı (dilersen Türkçe destekleyen tile server ekleyebilirsin)
+// 🗺️ OpenStreetMap katmanı
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution:
     '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 }).addTo(map);
 
-// 🎨 Ülke varsayılan stili
+// 🎨 Ülke varsayılan stili (şeffaflık var)
 const defaultCountryStyle = {
-  fillColor: "#38A1DB",
-  color: "#ffffff",
+  fillColor: "#38A1DB", // mavi
+  color: "#ffffff",     // beyaz sınır
   weight: 1,
-  opacity: 1,
-  fillOpacity: 0.6
+  opacity: 0.8,         // sınırların şeffaflığı
+  fillOpacity: 0.5      // iç rengin şeffaflığı
 };
 
 // ✨ Hover stili
 const highlightStyle = {
   weight: 2,
   color: "#333333",
-  fillOpacity: 0.8
+  fillOpacity: 0.7
 };
 
 let geojsonLayer = null;
-let selectedLayer = null; // seçilen ülke katmanı referansı
+let selectedLayer = null;
+let hasInitView = false;
 
 /**
  * Ülke etkileşimleri
  */
 function handleCountryInteraction(feature, layer) {
-  // Eğer GeoJSON'da Türkçe isim varsa, onu kullan. Yoksa İngilizce isim.
   const countryName =
-    feature.properties.name_tr ||  // Türkçe isim (yeni eklendi)
+    feature.properties.name_tr ||
     feature.properties.ADMIN ||
     feature.properties.ADMIN_NAME ||
     feature.properties.NAME ||
@@ -54,7 +54,7 @@ function handleCountryInteraction(feature, layer) {
     feature.properties.iso_a3 ||
     "---";
 
-  // Tooltip ekle (ülke ismi)
+  // Tooltip ekle
   layer.bindTooltip(countryName, {
     permanent: false,
     direction: "center",
@@ -72,7 +72,6 @@ function handleCountryInteraction(feature, layer) {
 
   layer.on("mouseout", function (e) {
     if (geojsonLayer) {
-      // Seçili katman dışındaki katmanların stili resetlenir
       if (selectedLayer && e.target === selectedLayer) return;
       geojsonLayer.resetStyle(e.target);
     }
@@ -80,17 +79,11 @@ function handleCountryInteraction(feature, layer) {
 
   // Tıklama olayı → app.js’e veri gönder
   layer.on("click", function () {
-    // Önce önceki seçili ülkenin stili sıfırlanır
     if (selectedLayer && selectedLayer !== layer) {
       geojsonLayer.resetStyle(selectedLayer);
     }
-
     selectedLayer = layer;
 
-
-
-
-    // Ülke seçimi eventini gönder
     const event = new CustomEvent("country:selected", {
       detail: { name: countryName, iso: isoCode }
     });
@@ -99,44 +92,52 @@ function handleCountryInteraction(feature, layer) {
 }
 
 /**
- * GeoJSON verisini yükle ve haritaya ekle
+ * Seçilen yıla göre GeoJSON verisini yükle
  */
-fetch("data/countries.geo.json")
-  .then((res) => {
-    if (!res.ok) throw new Error("GeoJSON yüklenemedi");
-    return res.json();
-  })
-  .then((geoData) => {
-    geojsonLayer = L.geoJSON(geoData, {
-      style: defaultCountryStyle,
-      onEachFeature: handleCountryInteraction
-    }).addTo(map);
+window.loadGeoJsonCountries = function (year) {
+  const url = (year === 2011)
+    ? "data/countries.geo.2011.json"
+    : "data/countries.geo.json";
 
-    // 🌍 Haritayı tüm dünya görünümüne ayarla
-    map.fitBounds(geojsonLayer.getBounds());
+  // mevcut görünümü sakla
+  const center = map.getCenter();
+  const zoom   = map.getZoom();
 
-    // 📍 Haritayı biraz yukarı kaydır
-    map.panBy([0, -60]); // 60px yukarı
+  if (geojsonLayer) {
+    map.removeLayer(geojsonLayer);
+    geojsonLayer = null;
+  }
 
+  fetch(url)
+    .then((res) => {
+      if (!res.ok) throw new Error("GeoJSON yüklenemedi");
+      return res.json();
+    })
+    .then((geoData) => {
+      geojsonLayer = L.geoJSON(geoData, {
+        style: defaultCountryStyle,
+        onEachFeature: handleCountryInteraction
+      }).addTo(map);
 
+      if (!hasInitView) {
+        map.fitBounds(geojsonLayer.getBounds());
+        map.panBy([0, 95]); // ilk açılışta yukarı kaydır
+        hasInitView = true;
+      } else {
+        map.setView(center, zoom, { animate: false }); // yıl değişince mevcut konum korunur
+      }
+    })
+    .catch((err) => {
+      console.error("GeoJSON yükleme hatası:", err);
+      alert(`Harita verileri yüklenemedi: ${url}`);
+    });
+};
 
-    // 🌍 Tüm dünya görünümünü ortala
-map.fitBounds(geojsonLayer.getBounds());
-
-// yukarı kaydır
-map.panBy([0, 95]); 
-  })
-
-  .catch((err) => {
-    console.error("GeoJSON yükleme hatası:", err);
-    alert(
-      'Harita verileri yüklenemedi. "data/countries.geo.json" dosyasını kontrol edin.'
-    );
-  });
+// İlk açılışta varsayılan yıl
+window.loadGeoJsonCountries(2025);
 
 /**
  * Haritada seçilen ülkeyi odaklar ve seçili stili uygular
- * @param {string} engName - Ülkenin İngilizce adı (GeoJSON properties.name ile eşleşmeli)
  */
 window.selectCountryOnMap = function (engName) {
   if (!geojsonLayer) return;
@@ -154,19 +155,16 @@ window.selectCountryOnMap = function (engName) {
     return;
   }
 
-  // Önce önceki seçili ülkenin stili sıfırlanır
   if (selectedLayer && selectedLayer !== foundLayer) {
     geojsonLayer.resetStyle(selectedLayer);
   }
 
   selectedLayer = foundLayer;
 
-  // Seçili ülkeye özel stil uygula
   foundLayer.setStyle({
     fillColor: "#FF5722",
     color: "#FF3D00",
     weight: 2,
     fillOpacity: 0.8
   });
-
 };
