@@ -140,23 +140,30 @@
       }
     });
 
-    miniPanel.addEventListener("click", (e) => {
+miniPanel.addEventListener("click", (e) => {
   const btn = e.target.closest("button");
   if (!btn || !miniPanel.contains(btn)) return;
 
   const scrollId = btn.dataset.scroll;
 
-  // "Ülke Hakkında" butonuna tıklanırsa alt menüyü aç/kapat
-  if (scrollId === "history-section") {
+  // Ülke Hakkında ana butonu
+  if (scrollId === "about-section") {
     aboutSubmenu.style.display =
       (aboutSubmenu.style.display === "none" || aboutSubmenu.style.display === "")
         ? "block"
         : "none";
+    return; // aşağıya düşmesin
   }
 
-  // İlgili bölüme yumuşak kaydırma
+  // 12 bölümden birine tıklandıysa
   if (scrollId) {
-    document.getElementById(scrollId)?.scrollIntoView({ behavior: "smooth" });
+    const sectionEl = document.getElementById(scrollId);
+
+    if (sectionEl) {
+      sectionEl.scrollIntoView({ behavior: "smooth" });
+    } else {
+      console.warn("ID bulunamadı:", scrollId);
+    }
   }
 });
 
